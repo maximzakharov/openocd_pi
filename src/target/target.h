@@ -207,6 +207,7 @@ struct target {
 
 	/* The semihosting information, extracted from the target. */
 	struct semihosting *semihosting;
+	int report_flash_progress;          /* If set to 1, FLASH writing operations will generate detailed progress messages */
 };
 
 struct target_list {
