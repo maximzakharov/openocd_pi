@@ -770,14 +770,23 @@ static int plugin_protect_check(struct flash_bank *bank)
     return retval;
 }
 
-struct flash_driver plugin_flash = { .name = "plugin",
-                                     .flash_bank_command = plugin_flash_bank_command,
-                                     .erase = plugin_erase,
-                                     .write = plugin_write,
-                                     .read = default_flash_read,
-                                     .probe = plugin_probe,
-                                     .auto_probe = plugin_auto_probe,
-                                     .erase_check = default_flash_blank_check,
-                                     .info = get_plugin_info,
-                                     .protect_check = plugin_protect_check,
-                                     .protect = plugin_protect };
+static void plugin_free(struct flash_bank *bank)
+{
+    free(bank->driver_priv);
+    bank->driver_priv = NULL;
+}
+
+struct flash_driver plugin_flash = {
+    .name = "plugin",
+    .flash_bank_command = plugin_flash_bank_command,
+    .erase = plugin_erase,
+    .write = plugin_write,
+    .read = default_flash_read,
+    .probe = plugin_probe,
+    .auto_probe = plugin_auto_probe,
+    .erase_check = default_flash_blank_check,
+    .info = get_plugin_info,
+    .protect_check = plugin_protect_check,
+    .protect = plugin_protect,
+    .free_driver_priv = plugin_free,
+};
