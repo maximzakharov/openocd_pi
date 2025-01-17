@@ -33,6 +33,12 @@ enum adapter_gpio_init_state {
 	ADAPTER_GPIO_INIT_STATE_INPUT,
 };
 
+enum adapter_gpio_restore_state {
+	ADAPTER_GPIO_RESTORE_STATE_INPUT, /* Should be zero so it is the default state */
+	ADAPTER_GPIO_RESTORE_STATE_OUTPUT,
+	ADAPTER_GPIO_RESTORE_STATE_ALT,
+};
+
 /** Supported pull directions for GPIO */
 enum adapter_gpio_pull {
 	ADAPTER_GPIO_PULL_NONE,
@@ -63,6 +69,7 @@ struct adapter_gpio_config {
 	enum adapter_gpio_init_state init_state;
 	bool active_low;
 	enum adapter_gpio_pull pull;
+	enum adapter_gpio_restore_state restore_state;
 };
 
 struct command_context;

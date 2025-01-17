@@ -29,6 +29,7 @@ static off_t bcm2835_peri_base = 0x20000000;
 /* See "GPIO Function Select Registers (GPFSELn)" in "Broadcom BCM2835 ARM Peripherals" datasheet. */
 #define BCM2835_GPIO_MODE_INPUT 0
 #define BCM2835_GPIO_MODE_OUTPUT 1
+#define BCM2835_GPIO_MODE_ALT0 2
 
 /* GPIO setup macros */
 #define MODE_GPIO(g) (*(pio_base+((g)/10))>>(((g)%10)*3) & 7)
@@ -123,7 +124,7 @@ static void set_gpio_value(const struct adapter_gpio_config *gpio_config, int va
 static void restore_gpio(enum adapter_gpio_config_index idx)
 {
 	if (is_gpio_config_valid(idx)) {
-		SET_MODE_GPIO(adapter_gpio_config[idx].gpio_num, initial_gpio_state[idx].mode);
+		SET_MODE_GPIO(adapter_gpio_config[idx].gpio_num, adapter_gpio_config[idx].restore_state);
 		if (initial_gpio_state[idx].mode == BCM2835_GPIO_MODE_OUTPUT) {
 			if (initial_gpio_state[idx].output_level)
 				GPIO_SET = 1 << adapter_gpio_config[idx].gpio_num;
@@ -138,8 +139,8 @@ static void initialize_gpio(enum adapter_gpio_config_index idx)
 {
 	if (!is_gpio_config_valid(idx))
 		return;
-
-	initial_gpio_state[idx].mode = MODE_GPIO(adapter_gpio_config[idx].gpio_num);
+	unsigned int mode = MODE_GPIO(adapter_gpio_config[idx].gpio_num);
+	initial_gpio_state[idx].mode = mode;
 	unsigned int shift = adapter_gpio_config[idx].gpio_num;
 	initial_gpio_state[idx].output_level = (GPIO_LEV >> shift) & 1;
 	LOG_DEBUG("saved GPIO mode for %s (GPIO %d %d): %d",

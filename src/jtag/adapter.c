@@ -1009,6 +1009,22 @@ COMMAND_HANDLER(adapter_gpio_config_handler)
 			continue;
 		}
 
+		if (strcmp(CMD_ARGV[i], "-restore-input") == 0) {
+			++i;
+			gpio_config->restore_state = ADAPTER_GPIO_RESTORE_STATE_INPUT;
+			continue;
+		}
+		if (strcmp(CMD_ARGV[i], "-restore-output") == 0) {
+			++i;
+			gpio_config->restore_state = ADAPTER_GPIO_RESTORE_STATE_OUTPUT;
+			continue;
+		}
+		if (strcmp(CMD_ARGV[i], "-restore-alternative") == 0) {
+			++i;
+			gpio_config->restore_state = ADAPTER_GPIO_RESTORE_STATE_ALT;
+			continue;
+		}
+
 		if (gpio_map[gpio_idx].permit_init_state_option) {
 			if (strcmp(CMD_ARGV[i], "-init-inactive") == 0) {
 				++i;
